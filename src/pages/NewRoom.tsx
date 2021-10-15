@@ -42,7 +42,7 @@ export function NewRoom() {
             <main>
                 <div className="main-content">
                     <img src={logoImg} alt="Letmeask logo" />
-                    <h2>Criar uma nova sala</h2>
+                    <h2>Crie uma nova sala</h2>
                     <form onSubmit={handleCreateRoom}>
                         <input 
                         type="text"
