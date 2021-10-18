@@ -1,18 +1,22 @@
+import { useState } from 'react'
 import { useParams } from "react-router-dom";
 
 import { Button } from "../components/Button";
 import { RoomCode } from "../components/RoomCode";
 import { Question } from "../components/Question";
+import { Modal } from "../components/Modal";
+
+import { useRoom } from "../hooks/useRoom";
+import { database } from "../services/firebase";
+// import { useAuth } from '../hooks/useAuth';
 
 import logoImg from "../assets/images/logo.svg";
 import deleteImg from "../assets/images/delete.svg";
-
-/* import { useAuth } from '../hooks/useAuth'; */
+import cautionImg from '../assets/images/delete-modal.svg'
 
 import "../styles/room.scss";
 import "../styles/question.scss";
-import { useRoom } from "../hooks/useRoom";
-import { database } from "../services/firebase";
+import '../styles/modal.scss'
 
 type RoomParams = {
   id: string;
@@ -24,12 +28,24 @@ export function AdminRoom() {
   const roomId = params.id;
 
   const { title, questions } = useRoom(roomId);
+  const [isQuestionModalVisible, setIsQuestionModalVisible] = useState(false)
+  // const [isRoomModalVisible, setIsRoomModalVisible] = useState(false)
+  const [questionId, setQuestionId] =  useState('')
 
-    async function handleDeleteQuestion(questionId: string) {
-        if (window.confirm('Tem certeza que deseja deletar essa pergunta?')) {
-            await database.ref(`rooms/${roomId}/questions/${questionId}`).remove()
-        }
-    }
+  function openModal(questionId: string) {
+    setQuestionId(questionId)
+    return setIsQuestionModalVisible(true)
+  }
+
+  function handleCancelDeleteQuestion() {
+    return setIsQuestionModalVisible(false)
+  }
+
+  async function handleConfirmDeleteQuestion(questionId: string) {
+    await database.ref(`rooms/${roomId}/questions/${questionId}`).remove()
+    return setIsQuestionModalVisible(false)
+  }
+
 
   return (
     <div id="page-room">
@@ -65,13 +81,20 @@ export function AdminRoom() {
                 className="delete-button"
                 type="button"
                 aria-label="Deletar pergunta"
-                onClick={() => handleDeleteQuestion(question.id)}>
+                onClick={(e) => openModal(question.id)}>
                     <img src={deleteImg} alt="" />
                 </button>
               </Question>
             );
           })}
         </div>
+        {isQuestionModalVisible ? <Modal
+        img={cautionImg}
+        title={'Excluir Pergunta'}
+        subtitle={'Tem certeza que você deseja excluir essa pergunta?'} 
+        cancelEvent={handleCancelDeleteQuestion}
+        confirmEvent={() => handleConfirmDeleteQuestion(questionId)}
+        /> : null}
       </main>
     </div>
   );
