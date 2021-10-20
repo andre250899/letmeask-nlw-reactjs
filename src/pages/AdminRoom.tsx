@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
 
 import { Button } from "../components/Button";
 import { RoomCode } from "../components/RoomCode";
@@ -12,11 +12,13 @@ import { database } from "../services/firebase";
 
 import logoImg from "../assets/images/logo.svg";
 import deleteImg from "../assets/images/delete.svg";
-import cautionImg from '../assets/images/delete-modal.svg'
+import cautionImg from "../assets/images/delete-modal.svg";
+import answerImg from "../assets/images/answer.svg";
+import checkImg from "../assets/images/check.svg";
 
 import "../styles/room.scss";
 import "../styles/question.scss";
-import '../styles/modal.scss'
+import "../styles/modal.scss";
 
 type RoomParams = {
   id: string;
@@ -24,26 +26,49 @@ type RoomParams = {
 
 export function AdminRoom() {
   // const {user} = useAuth();
+  const history = useHistory();
   const params = useParams<RoomParams>();
   const roomId = params.id;
 
   const { title, questions } = useRoom(roomId);
-  const [isQuestionModalVisible, setIsQuestionModalVisible] = useState(false)
+  const [isQuestionModalVisible, setIsQuestionModalVisible] = useState(false);
   // const [isRoomModalVisible, setIsRoomModalVisible] = useState(false)
-  const [questionId, setQuestionId] =  useState('')
+  const [questionId, setQuestionId] = useState("");
 
-  function openModal(questionId: string) {
-    setQuestionId(questionId)
-    return setIsQuestionModalVisible(true)
+  async function handleEndRoom() {
+    database.ref(`rooms/${roomId}`).update({
+      endedAt: new Date(),
+    });
+
+    history.push("/");
   }
 
-  function handleCancelDeleteQuestion() {
-    return setIsQuestionModalVisible(false)
+  const questionModal = {
+    openModal(questionId: string) {
+      setQuestionId(questionId);
+      return setIsQuestionModalVisible(true);
+    },
+
+    handleCancelDeleteQuestion() {
+      return setIsQuestionModalVisible(false);
+    },
+
+    async handleConfirmDeleteQuestion(questionId: string) {
+      await database.ref(`rooms/${roomId}/questions/${questionId}`).remove();
+      return setIsQuestionModalVisible(false);
+    },
+  };
+
+  function handleCheckQuestionIsAnswered(questionId : string) { 
+    database.ref(`rooms/${roomId}/questions/${questionId}`).update({
+      isAnswered: true,
+    })
   }
 
-  async function handleConfirmDeleteQuestion(questionId: string) {
-    await database.ref(`rooms/${roomId}/questions/${questionId}`).remove()
-    return setIsQuestionModalVisible(false)
+  function handleCheckQuestionIsHighlighted(questionId : string) {
+    database.ref(`rooms/${roomId}/questions/${questionId}`).update({
+      isHighlighted: true,
+    })
   }
 
 
@@ -54,7 +79,9 @@ export function AdminRoom() {
           <img src={logoImg} alt="Letmeask logo" />
           <div>
             <RoomCode code={params.id} />
-            <Button isOutlined>Encerrar sala</Button>
+            <Button isOutlined onClick={handleEndRoom}>
+              Encerrar sala
+            </Button>
           </div>
         </div>
       </header>
@@ -72,29 +99,54 @@ export function AdminRoom() {
         <div className="question-list">
           {questions.map((question) => {
             return (
-              <Question
-                key={question.id}
-                content={question.content}
-                author={question.author}
-              >
-                <button
-                className="delete-button"
-                type="button"
-                aria-label="Deletar pergunta"
-                onClick={(e) => openModal(question.id)}>
+              <div key={question.id} className={question.isHighlighted ? 'highlighted' : 'not-highlighted'}>
+                <Question
+                  key={question.id}
+                  content={question.content}
+                  author={question.author}
+                  isHighlighted={question.isHighlighted}
+                  isAnswered={question.isAnswered}
+                >
+                  <button
+                    className="answered-button"
+                    type="button"
+                    aria-label="Marcar como respondida"
+                    onClick={() => handleCheckQuestionIsAnswered(question.id)}
+                  >
+                    <img src={checkImg} alt="Marcar pergunta como respondida" />
+                  </button>
+                  <button
+                    className="highlited-button"
+                    type="button"
+                    aria-label="Marcar como lida"
+                    onClick={() => handleCheckQuestionIsHighlighted(question.id)}
+                  >
+                    <img src={answerImg} alt="Marcar pergunta como lida" />
+                  </button>
+                  <button
+                    className="delete-button"
+                    type="button"
+                    aria-label="Deletar pergunta"
+                    onClick={() => questionModal.openModal(question.id)}
+                  >
                     <img src={deleteImg} alt="" />
-                </button>
-              </Question>
+                  </button>
+                </Question>
+              </div>
             );
           })}
         </div>
-        {isQuestionModalVisible ? <Modal
-        img={cautionImg}
-        title={'Excluir Pergunta'}
-        subtitle={'Tem certeza que você deseja excluir essa pergunta?'} 
-        cancelEvent={handleCancelDeleteQuestion}
-        confirmEvent={() => handleConfirmDeleteQuestion(questionId)}
-        /> : null}
+        {isQuestionModalVisible ? (
+          <Modal
+            img={cautionImg}
+            title={"Excluir Pergunta"}
+            subtitle={"Tem certeza que você deseja excluir essa pergunta?"}
+            cancelEvent={questionModal.handleCancelDeleteQuestion}
+            confirmEvent={() =>
+              questionModal.handleConfirmDeleteQuestion(questionId)
+            }
+          />
+        ) : null}
       </main>
     </div>
   );

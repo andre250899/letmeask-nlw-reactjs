@@ -1,5 +1,6 @@
 type ModalProps = {
-  img?: any,
+  
+  img?: string,
   title?: string,
   subtitle?: string,
   cancelEvent?: any,
