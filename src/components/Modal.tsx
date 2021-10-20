@@ -5,6 +5,7 @@ type ModalProps = {
   subtitle?: string,
   cancelEvent?: any,
   confirmEvent?: any,
+  textConfirmButton?: string,
 }
 
 export function Modal({cancelEvent, confirmEvent, ...props}: ModalProps) {
@@ -20,7 +21,7 @@ export function Modal({cancelEvent, confirmEvent, ...props}: ModalProps) {
             Cancelar
           </button>
           <button onClick={confirmEvent} id="delete-button">
-            Sim, excluir
+            {props.textConfirmButton}
           </button>
         </div>
       </div>

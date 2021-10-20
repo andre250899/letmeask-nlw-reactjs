@@ -12,7 +12,8 @@ import { database } from "../services/firebase";
 
 import logoImg from "../assets/images/logo.svg";
 import deleteImg from "../assets/images/delete.svg";
-import cautionImg from "../assets/images/delete-modal.svg";
+import trashImg from "../assets/images/delete-modal.svg";
+import dangerImg from "../assets/images/danger.svg";
 import answerImg from "../assets/images/answer.svg";
 import checkImg from "../assets/images/check.svg";
 
@@ -32,18 +33,10 @@ export function AdminRoom() {
 
   const { title, questions } = useRoom(roomId);
   const [isQuestionModalVisible, setIsQuestionModalVisible] = useState(false);
-  // const [isRoomModalVisible, setIsRoomModalVisible] = useState(false)
+  const [isRoomModalVisible, setIsRoomModalVisible] = useState(false)
   const [questionId, setQuestionId] = useState("");
 
-  async function handleEndRoom() {
-    database.ref(`rooms/${roomId}`).update({
-      endedAt: new Date(),
-    });
-
-    history.push("/");
-  }
-
-  const questionModal = {
+  const questionDeleteModal = {
     openModal(questionId: string) {
       setQuestionId(questionId);
       return setIsQuestionModalVisible(true);
@@ -58,6 +51,25 @@ export function AdminRoom() {
       return setIsQuestionModalVisible(false);
     },
   };
+
+  const roomTerminateModal = {
+    openModal() {
+      return setIsRoomModalVisible(true);
+    },
+
+    handleCancelTerminateRoom() {
+      return setIsRoomModalVisible(false);
+    },
+
+    async handleConfirmTerminateRoom() {
+        database.ref(`rooms/${roomId}`).update({
+          endedAt: new Date(),
+        });
+
+        setIsRoomModalVisible(false)
+        return history.push("/");
+    },
+  }
 
   function handleCheckQuestionIsAnswered(questionId : string) { 
     database.ref(`rooms/${roomId}/questions/${questionId}`).update({
@@ -79,7 +91,7 @@ export function AdminRoom() {
           <img src={logoImg} alt="Letmeask logo" />
           <div>
             <RoomCode code={params.id} />
-            <Button isOutlined onClick={handleEndRoom}>
+            <Button isOutlined onClick={roomTerminateModal.openModal}>
               Encerrar sala
             </Button>
           </div>
@@ -127,7 +139,7 @@ export function AdminRoom() {
                     className="delete-button"
                     type="button"
                     aria-label="Deletar pergunta"
-                    onClick={() => questionModal.openModal(question.id)}
+                    onClick={() => questionDeleteModal.openModal(question.id)}
                   >
                     <img src={deleteImg} alt="" />
                   </button>
@@ -138,13 +150,24 @@ export function AdminRoom() {
         </div>
         {isQuestionModalVisible ? (
           <Modal
-            img={cautionImg}
+            img={trashImg}
             title={"Excluir Pergunta"}
             subtitle={"Tem certeza que você deseja excluir essa pergunta?"}
-            cancelEvent={questionModal.handleCancelDeleteQuestion}
+            textConfirmButton={"Sim, excluir"}
+            cancelEvent={questionDeleteModal.handleCancelDeleteQuestion}
             confirmEvent={() =>
-              questionModal.handleConfirmDeleteQuestion(questionId)
+              questionDeleteModal.handleConfirmDeleteQuestion(questionId)
             }
+          />
+        ) : null}
+        {isRoomModalVisible ? (
+          <Modal
+            img={dangerImg}
+            title={"Encerrar sala"}
+            subtitle={"Tem certeza que você deseja encerrar essa sala?"}
+            textConfirmButton={"Sim, encerrar"}
+            cancelEvent={roomTerminateModal.handleCancelTerminateRoom}
+            confirmEvent={roomTerminateModal.handleConfirmTerminateRoom}
           />
         ) : null}
       </main>
