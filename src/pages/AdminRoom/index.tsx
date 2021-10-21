@@ -1,25 +1,21 @@
 import { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
-import { Button } from "../components/Button";
-import { RoomCode } from "../components/RoomCode";
-import { Question } from "../components/Question";
-import { Modal } from "../components/Modal";
+import { Button } from "../../components/Button";
+import { RoomCode } from "../../components/RoomCode";
+import { Question } from "../../components/Question";
+import { Modal } from "../../components/Modal";
 
-import { useRoom } from "../hooks/useRoom";
-import { database } from "../services/firebase";
+import { useRoom } from "../../hooks/useRoom";
+import { database } from "../../services/firebase";
 // import { useAuth } from '../hooks/useAuth';
 
-import logoImg from "../assets/images/logo.svg";
-import deleteImg from "../assets/images/delete.svg";
-import trashImg from "../assets/images/delete-modal.svg";
-import dangerImg from "../assets/images/danger.svg";
-import answerImg from "../assets/images/answer.svg";
-import checkImg from "../assets/images/check.svg";
-
-import "../styles/room.scss";
-import "../styles/question.scss";
-import "../styles/modal.scss";
+import logoImg from "../../assets/images/logo.svg";
+import deleteImg from "../../assets/images/delete.svg";
+import trashImg from "../../assets/images/delete-modal.svg";
+import dangerImg from "../../assets/images/danger.svg";
+import answerImg from "../../assets/images/answer.svg";
+import checkImg from "../../assets/images/check.svg";
 
 type RoomParams = {
   id: string;
