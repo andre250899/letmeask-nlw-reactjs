@@ -59,7 +59,7 @@ export function Home() {
       </aside>
       <main>
         <div className="main-content">
-          <img src={logoImg} alt="Letmeask logo" />
+          <img src={logoImg} alt="Letmeask logo" draggable="false"/>
           <button onClick={handleCreateRoom} className="create-room">
             <img src={googleIconImg} alt="Logo do google" />
             Crie sua sala com o Google

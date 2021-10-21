@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 
 import { Button } from "../../components/Button";
 import { RoomCode } from "../../components/RoomCode";
@@ -84,7 +84,9 @@ export function AdminRoom() {
     <div id="page-room">
       <header>
         <div className="content">
-          <img src={logoImg} alt="Letmeask logo" />
+          <Link to='/'>
+            <img src={logoImg} alt="Letmeask logo" />
+          </Link>
           <div>
             <RoomCode code={params.id} />
             <Button isOutlined onClick={roomTerminateModal.openModal}>

@@ -9,9 +9,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            align-content: center;
 
-            > img {
+            > a img {
                 max-height: 45px;
+                cursor: pointer;
             }
 
             > div {
@@ -30,7 +32,7 @@
         margin: 0 auto;
 
         .room-title {
-            margin: 32px 0 24;
+            margin: 32px 0 24px;
             display: flex;
             align-items: center;
 
@@ -60,14 +62,14 @@
                 background: #fefefe;
                 box-shadow: 0 2px 12px rgba(0,0,0,0.04);
                 resize: vertical;
-                min-height: 130px
+                min-height: 130px;
             }
 
             .form-footer {
                 display:flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-top: 16px;
+                margin-top: 10px;
 
                 .user-info {
                     display:flex;

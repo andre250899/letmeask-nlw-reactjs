@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 import { Button } from "../../components/Button";
 import { RoomCode } from "../../components/RoomCode";
@@ -59,13 +59,15 @@ export function Room() {
         authorId: user?.id,
     })
     }
-  }
+  } 
 
   return (
     <div id="page-room">
       <header>
         <div className="content">
-          <img src={logoImg} alt="Letmeask logo" />
+          <Link to={'/'}>
+            <img src={logoImg} alt="Letmeask logo" draggable="false"/>
+          </Link>
           <RoomCode code={params.id} />
         </div>
       </header>
