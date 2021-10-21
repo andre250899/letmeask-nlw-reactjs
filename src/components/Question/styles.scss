@@ -72,7 +72,24 @@
         }
 
         &:hover {
-          filter: brightness(0.7);
+          
+      }
+    }
+
+    .buttons {
+      #delete-svg:hover {
+        path {
+          stroke: #E73F5D;
+        }
+      }
+
+      #highlight-svg:hover {
+        path {
+          stroke: #835AFD;
+        }
+      }
+      #check-svg:hover {
+        filter: brightness(0.7);
       }
     }
   }
