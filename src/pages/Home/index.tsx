@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify'
 
 import { database } from "../../services/firebase";
 
@@ -11,6 +12,7 @@ import { Button } from "../../components/Button";
 import { useAuth } from "../../hooks/useAuth";
 
 import "../../styles/auth.scss";
+import "react-toastify/dist/ReactToastify.css"
 
 export function Home() {
   const history = useHistory();
@@ -33,14 +35,21 @@ export function Home() {
     }
 
     const roomRef = await database.ref(`rooms/${roomCode}`).get();
+    const notifyProps = {
+      autoClose: 2000,
+      position: toast.POSITION.TOP_CENTER,
+      hideProgressBar: true
+    }
+    const notifyNotExists = () => toast.error("Sala inexistente!", notifyProps)
+    const notifyEndedRoom = () => toast.error("A sala foi encerrada por um administrador!", notifyProps)
 
     if (!roomRef.exists()) {
-      alert("Room does not exists.");
+      notifyNotExists();
       return;
     }
 
     if (roomRef.val().endedAt) {
-      alert('A sala está fechada');
+      notifyEndedRoom();
       return;
     }
 
@@ -76,6 +85,7 @@ export function Home() {
           </form>
         </div>
       </main>
+      <ToastContainer/>
     </div>
   );
 }

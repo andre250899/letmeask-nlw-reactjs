@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify"
 
 import { Button } from "../../components/Button";
 import { RoomCode } from "../../components/RoomCode";
@@ -22,13 +23,19 @@ export function Room() {
   const params = useParams<RoomParams>();
   const [newQuestion, setNewQuestion] = useState("");
   const roomId = params.id;
-
   const { title, questions } = useRoom(roomId);
+
+  const notifyProps = {
+    autoClose: 2000,
+    position: toast.POSITION.TOP_CENTER,
+    hideProgressBar: true
+  }
 
   async function handleSendQuestion(event: FormEvent) {
     event.preventDefault();
 
     if (newQuestion.trim() === "") {
+      toast.warn("A pergunta não pode estar vazia", notifyProps)
       return;
     }
 
@@ -47,6 +54,7 @@ export function Room() {
     };
 
     await database.ref(`rooms/${roomId}/questions`).push(question);
+    toast.success("Pergunta efetuada com sucesso!", notifyProps)
 
     setNewQuestion("");
   }
@@ -144,6 +152,7 @@ export function Room() {
           })}
         </div>
       </main>
+      <ToastContainer/>
     </div>
   );
 }

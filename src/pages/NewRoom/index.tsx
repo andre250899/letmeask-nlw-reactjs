@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
+import { toast, ToastContainer } from 'react-toastify';
 
 import illustrationImg from '../../assets/images/illustration.svg';
 import logoImg from '../../assets/images/logo.svg';
@@ -9,6 +10,7 @@ import { database } from '../../services/firebase';
 import { useAuth } from '../../hooks/useAuth';
 
 import '../../styles/auth.scss';
+import 'react-toastify/dist/ReactToastify.min.css';
 
 export function NewRoom() {
     const { user } = useAuth();
@@ -29,7 +31,14 @@ export function NewRoom() {
             authorId: user?.id
         })
 
-        history.push(`/rooms/${firebaseRoom.key}`)
+        const notify = () => toast.success("Sala Criada com sucesso!", {
+            pauseOnFocusLoss: false,
+            autoClose: 1000,
+            position: toast.POSITION.TOP_CENTER,
+            onClose: () => history.push(`/rooms/${firebaseRoom.key}`)
+          });
+
+        notify()
     }
 
     return (
@@ -59,6 +68,7 @@ export function NewRoom() {
                     </p>
                 </div>
             </main>
+            <ToastContainer/>
         </div>
     )
 }

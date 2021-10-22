@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
+import { ToastContainer, toast} from "react-toastify"
 
 import { Button } from "../../components/Button";
 import { RoomCode } from "../../components/RoomCode";
@@ -32,6 +33,12 @@ export function AdminRoom() {
   const [isRoomModalVisible, setIsRoomModalVisible] = useState(false);
   const [questionId, setQuestionId] = useState("");
 
+  const notifyProps = {
+    autoClose: 2000,
+    position: toast.POSITION.TOP_CENTER,
+    hideProgressBar: true
+  }
+
   const questionDeleteModal = {
     openModal(questionId: string) {
       setQuestionId(questionId);
@@ -44,7 +51,8 @@ export function AdminRoom() {
 
     async handleConfirmDeleteQuestion(questionId: string) {
       await database.ref(`rooms/${roomId}/questions/${questionId}`).remove();
-      return setIsQuestionModalVisible(false);
+      setIsQuestionModalVisible(false);
+      toast.success("Pergunta deletada com sucesso!", notifyProps);
     },
   };
 
@@ -63,7 +71,12 @@ export function AdminRoom() {
       });
 
       setIsRoomModalVisible(false);
-      return history.push("/");
+
+      toast.success("Sala Encerrada com sucesso!", {
+        autoClose: 2000,
+        position: toast.POSITION.TOP_CENTER,
+        onClose: () => history.push('/')
+      });
     },
   };
 
@@ -238,6 +251,7 @@ export function AdminRoom() {
           />
         ) : null}
       </main>
+      <ToastContainer/>
     </div>
   );
 }
