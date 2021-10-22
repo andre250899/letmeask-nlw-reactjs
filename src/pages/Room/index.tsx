@@ -1,18 +1,18 @@
 import { FormEvent, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify"
+import { ToastContainer, toast } from "react-toastify";
 
 import { Button } from "../../components/Button";
 import { RoomCode } from "../../components/RoomCode";
 import { Question } from "../../components/Question";
 
-import logoImg from "../../assets/images/logo.svg";
-
 import { useAuth } from "../../hooks/useAuth";
+import { useRoom } from "../../hooks/useRoom";
 import { database } from "../../services/firebase";
 
+import logoImg from "../../assets/images/logo.svg";
+
 import "./styles.scss";
-import { useRoom } from "../../hooks/useRoom";
 
 type RoomParams = {
   id: string;
@@ -25,18 +25,17 @@ export function Room() {
   const roomId = params.id;
   const { title, questions } = useRoom(roomId);
 
-
   const notifyProps = {
     autoClose: 2000,
     position: toast.POSITION.TOP_CENTER,
-    hideProgressBar: true
-  }
+    hideProgressBar: true,
+  };
 
   async function handleSendQuestion(event: FormEvent) {
     event.preventDefault();
 
     if (newQuestion.trim() === "") {
-      toast.warn("A pergunta não pode estar vazia", notifyProps)
+      toast.warn("A pergunta não pode estar vazia", notifyProps);
       return;
     }
 
@@ -55,31 +54,36 @@ export function Room() {
     };
 
     await database.ref(`rooms/${roomId}/questions`).push(question);
-    toast.success("Pergunta efetuada com sucesso!", notifyProps)
+    toast.success("Pergunta efetuada com sucesso!", notifyProps);
 
     setNewQuestion("");
   }
 
-  async function handleLikeQuestion(questionId: string, likeId: string | undefined) {
+  async function handleLikeQuestion(
+    questionId: string,
+    likeId: string | undefined
+  ) {
     if (likeId) {
-      await database.ref(`rooms/${roomId}/questions/${questionId}/likes/${likeId}`).remove()
+      await database
+        .ref(`rooms/${roomId}/questions/${questionId}/likes/${likeId}`)
+        .remove();
     } else {
       await database.ref(`rooms/${roomId}/questions/${questionId}/likes`).push({
         authorId: user?.id,
-    })
+      });
     }
-  } 
+  }
 
   async function googleAuthentication() {
-    await signInWithGoogle()
+    await signInWithGoogle();
   }
 
   return (
     <div id="page-room">
       <header>
         <div className="content">
-          <Link to={'/'}>
-            <img src={logoImg} alt="Letmeask logo" draggable="false"/>
+          <Link to={"/"}>
+            <img src={logoImg} alt="Letmeask logo" draggable="false" />
           </Link>
           <RoomCode code={params.id} />
         </div>
@@ -110,7 +114,8 @@ export function Room() {
               </div>
             ) : (
               <span>
-                Para enviar uma pergunta, <button onClick={googleAuthentication}>faça seu login</button>
+                Para enviar uma pergunta,{" "}
+                <button onClick={googleAuthentication}>faça seu login</button>
               </span>
             )}
             <Button type="submit" disabled={!user}>
@@ -130,15 +135,17 @@ export function Room() {
                 isAnswered={question.isAnswered}
               >
                 <button
-                  className={`like-button ${question.likeId ? 'liked' : ''}`}
+                  className={`like-button ${question.likeId ? "liked" : ""}`}
                   type="button"
                   aria-label="Marcar como gostei"
-                  onClick={() => handleLikeQuestion(question.id, question.likeId)}
+                  onClick={() =>
+                    handleLikeQuestion(question.id, question.likeId)
+                  }
                 >
-                  { question.likeCount > 0 && <span>{question.likeCount}</span> }
+                  {question.likeCount > 0 && <span>{question.likeCount}</span>}
                   <svg
                     width="24"
-                    height="24" 
+                    height="24"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -157,7 +164,7 @@ export function Room() {
           })}
         </div>
       </main>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 }

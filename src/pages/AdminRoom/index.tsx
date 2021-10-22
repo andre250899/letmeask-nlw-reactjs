@@ -66,13 +66,13 @@ export function AdminRoom() {
     },
 
     async handleConfirmTerminateRoom() {
-      database.ref(`rooms/${roomId}`).update({
+      await database.ref(`rooms/${roomId}`).update({
         endedAt: new Date(),
       });
 
       setIsRoomModalVisible(false);
 
-      toast.success("Sala Encerrada com sucesso!", {
+      toast.success("Sala encerrada com sucesso!", {
         autoClose: 2000,
         position: toast.POSITION.TOP_CENTER,
         onClose: () => history.push('/')

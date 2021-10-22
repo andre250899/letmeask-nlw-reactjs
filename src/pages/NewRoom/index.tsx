@@ -20,7 +20,18 @@ export function NewRoom() {
     async function handleCreateRoom(event: FormEvent) {
         event.preventDefault();
 
+        const toastProps = {
+            pauseOnFocusLoss: false,
+            autoClose: 1000,
+            position: toast.POSITION.TOP_CENTER
+        }
+
         if (newRoom.trim() === '') {
+            toast.warn("O nome da sala não pode estar vazio!", {
+                ...toastProps,
+                autoClose: 3000,
+                hideProgressBar: true
+            })
             return
         }
 
@@ -32,9 +43,7 @@ export function NewRoom() {
         })
 
         const notify = () => toast.success("Sala Criada com sucesso!", {
-            pauseOnFocusLoss: false,
-            autoClose: 1000,
-            position: toast.POSITION.TOP_CENTER,
+            ...toastProps,
             onClose: () => history.push(`/rooms/${firebaseRoom.key}`)
           });
 
@@ -46,7 +55,7 @@ export function NewRoom() {
             <aside>
                 <img src={illustrationImg} alt="Ilustração simbolizando perguntas e respostas"/>
                 <strong>Toda pergunta tem uma resposta.</strong>
-                <p>Aprenda ecompartilhe conhecimento com outras pessoas</p>
+                <p>Aprenda e compartilhe conhecimento com outras pessoas</p>
             </aside>
             <main>
                 <div className="main-content">

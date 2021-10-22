@@ -1,19 +1,19 @@
 import { FormEvent, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer, toast } from "react-toastify";
 
 import { database } from "../../services/firebase";
 
 import illustrationImg from "../../assets/images/illustration.svg";
 import logoImg from "../../assets/images/logo.svg";
 import googleIconImg from "../../assets/images/google-icon.svg";
-import loginImg from "../../assets/images/log-in.svg"
+import loginImg from "../../assets/images/log-in.svg";
 
 import { Button } from "../../components/Button";
 import { useAuth } from "../../hooks/useAuth";
 
 import "../../styles/auth.scss";
-import "react-toastify/dist/ReactToastify.css"
+import "react-toastify/dist/ReactToastify.css";
 
 export function Home() {
   const history = useHistory();
@@ -31,18 +31,24 @@ export function Home() {
   async function handleJoinRoom(event: FormEvent) {
     event.preventDefault();
 
+    const notifyProps = {
+      autoClose: 2000,
+      position: toast.POSITION.TOP_CENTER,
+      hideProgressBar: true,
+    };
+
+    const notifyEmptyInput = () =>
+      toast.warn("O código da sala não pode estar vazio!", notifyProps);
+    const notifyNotExists = () => toast.error("Sala inexistente!", notifyProps);
+    const notifyEndedRoom = () =>
+      toast.error("A sala foi encerrada por um administrador!", notifyProps);
+
     if (roomCode.trim() === "") {
+      notifyEmptyInput();
       return;
     }
 
     const roomRef = await database.ref(`rooms/${roomCode}`).get();
-    const notifyProps = {
-      autoClose: 2000,
-      position: toast.POSITION.TOP_CENTER,
-      hideProgressBar: true
-    }
-    const notifyNotExists = () => toast.error("Sala inexistente!", notifyProps)
-    const notifyEndedRoom = () => toast.error("A sala foi encerrada por um administrador!", notifyProps)
 
     if (!roomRef.exists()) {
       notifyNotExists();
@@ -65,11 +71,11 @@ export function Home() {
           alt="Ilustração simbolizando perguntas e respostas"
         />
         <strong>Toda pergunta tem uma resposta.</strong>
-        <p>Aprenda ecompartilhe conhecimento com outras pessoas</p>
+        <p>Aprenda e compartilhe conhecimento com outras pessoas</p>
       </aside>
       <main>
         <div className="main-content">
-          <img src={logoImg} alt="Letmeask logo" draggable="false"/>
+          <img src={logoImg} alt="Letmeask logo" draggable="false" />
           <button onClick={handleCreateRoom} className="create-room">
             <img src={googleIconImg} alt="Logo do google" />
             Crie sua sala com o Google
@@ -91,7 +97,7 @@ export function Home() {
           </form>
         </div>
       </main>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 }
