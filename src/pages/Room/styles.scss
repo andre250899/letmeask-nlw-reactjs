@@ -8,12 +8,16 @@
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            align-content: center;
 
-            > a img {
+            > a {
+                margin-top: 1px;
+                display: flex;
+                align-items: center;
+
+                img {
                 max-height: 45px;
                 cursor: pointer;
+                }
             }
 
             > div {

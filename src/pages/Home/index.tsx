@@ -7,6 +7,7 @@ import { database } from "../../services/firebase";
 import illustrationImg from "../../assets/images/illustration.svg";
 import logoImg from "../../assets/images/logo.svg";
 import googleIconImg from "../../assets/images/google-icon.svg";
+import loginImg from "../../assets/images/log-in.svg"
 
 import { Button } from "../../components/Button";
 import { useAuth } from "../../hooks/useAuth";
@@ -63,8 +64,8 @@ export function Home() {
           src={illustrationImg}
           alt="Ilustração simbolizando perguntas e respostas"
         />
-        <strong>Crie salas de Q&amp;A ao-vivo</strong>
-        <p>Tire as dúvidas da sua audiência em tempo real</p>
+        <strong>Toda pergunta tem uma resposta.</strong>
+        <p>Aprenda ecompartilhe conhecimento com outras pessoas</p>
       </aside>
       <main>
         <div className="main-content">
@@ -81,7 +82,12 @@ export function Home() {
               onChange={(event) => setRoomCode(event.target.value)}
               value={roomCode}
             />
-            <Button type="submit">Entrar na sala</Button>
+            <Button type="submit">
+              <span>
+                <img src={loginImg} alt="Símbolo de entrar" />
+                Entrar na sala
+              </span>
+            </Button>
           </form>
         </div>
       </main>
