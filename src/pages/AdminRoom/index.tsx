@@ -9,14 +9,10 @@ import { Modal } from "../../components/Modal";
 
 import { useRoom } from "../../hooks/useRoom";
 import { database } from "../../services/firebase";
-// import { useAuth } from '../hooks/useAuth';
 
 import logoImg from "../../assets/images/logo.svg";
 import trashImg from "../../assets/images/delete-modal.svg";
 import dangerImg from "../../assets/images/danger.svg";
-/* import deleteImg from "../../assets/images/delete.svg";
-import answerImg from "../../assets/images/answer.svg";
-import checkImg from "../../assets/images/check.svg"; */
 
 type RoomParams = {
   id: string;
@@ -250,8 +246,8 @@ export function AdminRoom() {
             confirmEvent={roomTerminateModal.handleConfirmTerminateRoom}
           />
         ) : null}
-      </main>
       <ToastContainer/>
+      </main>
     </div>
   );
 }

@@ -5,9 +5,9 @@ type ModalProps = {
   img?: string,
   title?: string,
   subtitle?: string,
-  cancelEvent?: any,
-  confirmEvent?: any,
   textConfirmButton?: string,
+  cancelEvent?: React.MouseEventHandler<HTMLButtonElement>,
+  confirmEvent?: React.MouseEventHandler<HTMLButtonElement>,
 }
 
 export function Modal({cancelEvent, confirmEvent, ...props}: ModalProps) {
